@@ -1339,9 +1339,9 @@ function calculateTotalAndExtractStructure(){
     let garnitures=getBoxMultiValues(idPrefix,"garniture");
     let pots=getBoxPots(idPrefix);
     structuredOrderText+=`\n📦 BOÎTE DE 9 BEIGNETS n°${b} : ${getBoxValue(idPrefix,"base")}`;
-    if(nappages.length>0)structuredOrderText+=` | Nappage(s) : ${nappages.join(" + ")}`;
-    if(garnitures.length>0)structuredOrderText+=` | Garniture(s) : ${garnitures.join(" + ")}`;
-    Object.keys(pots).forEach(p=>{if(pots[p]>0)structuredOrderText+=` + ${pots[p]>1?pots[p]+"x ":""}${p}`;});
+    if(nappages.length>0)structuredOrderText+=` | Nappage(s) : ${nappages.map(v=>v+noteDispoTexte("nappage",v)).join(" + ")}`;
+    if(garnitures.length>0)structuredOrderText+=` | Garniture(s) : ${garnitures.map(v=>v+noteDispoTexte("garniture",v)).join(" + ")}`;
+    Object.keys(pots).forEach(p=>{if(pots[p]>0)structuredOrderText+=` + ${pots[p]>1?pots[p]+"x ":""}${p}${noteDispoTexte("pot",p)}`;});
     structuredOrderText+=`\n`;
   }
   for(let b=1;b<=boxesSelected["12 beignets"];b++){
@@ -1352,9 +1352,9 @@ function calculateTotalAndExtractStructure(){
     let garnitures=getBoxMultiValues(idPrefix,"garniture");
     let pots=getBoxPots(idPrefix);
     structuredOrderText+=`\n📦 BOÎTE DE 12 BEIGNETS n°${b} : ${getBoxValue(idPrefix,"base")}`;
-    if(nappages.length>0)structuredOrderText+=` | Nappage(s) : ${nappages.join(" + ")}`;
-    if(garnitures.length>0)structuredOrderText+=` | Garniture(s) : ${garnitures.join(" + ")}`;
-    Object.keys(pots).forEach(p=>{if(pots[p]>0)structuredOrderText+=` + ${pots[p]>1?pots[p]+"x ":""}${p}`;});
+    if(nappages.length>0)structuredOrderText+=` | Nappage(s) : ${nappages.map(v=>v+noteDispoTexte("nappage",v)).join(" + ")}`;
+    if(garnitures.length>0)structuredOrderText+=` | Garniture(s) : ${garnitures.map(v=>v+noteDispoTexte("garniture",v)).join(" + ")}`;
+    Object.keys(pots).forEach(p=>{if(pots[p]>0)structuredOrderText+=` + ${pots[p]>1?pots[p]+"x ":""}${p}${noteDispoTexte("pot",p)}`;});
     structuredOrderText+=`\n`;
   }
   // Boîte offerte (promo retrait du dimanche 6 septembre 2026) : jamais ajoutée à "total",
@@ -1366,9 +1366,9 @@ function calculateTotalAndExtractStructure(){
     let potsFree=getBoxPots(pFree);
     textSummaryList.push(`🎁 1x Boîte de 9 OFFERTE`);
     structuredOrderText+=`\n🎁 BOÎTE DE 9 BEIGNETS OFFERTE (promo retrait du 06/09) : ${getBoxValue(pFree,"base")}`;
-    if(nappagesFree.length>0)structuredOrderText+=` | Nappage(s) : ${nappagesFree.join(" + ")}`;
-    if(garnituresFree.length>0)structuredOrderText+=` | Garniture(s) : ${garnituresFree.join(" + ")}`;
-    Object.keys(potsFree).forEach(p=>{if(potsFree[p]>0)structuredOrderText+=` + ${potsFree[p]>1?potsFree[p]+"x ":""}${p}`;});
+    if(nappagesFree.length>0)structuredOrderText+=` | Nappage(s) : ${nappagesFree.map(v=>v+noteDispoTexte("nappage",v)).join(" + ")}`;
+    if(garnituresFree.length>0)structuredOrderText+=` | Garniture(s) : ${garnituresFree.map(v=>v+noteDispoTexte("garniture",v)).join(" + ")}`;
+    Object.keys(potsFree).forEach(p=>{if(potsFree[p]>0)structuredOrderText+=` + ${potsFree[p]>1?potsFree[p]+"x ":""}${p}${noteDispoTexte("pot",p)}`;});
     structuredOrderText+=` — 0,00€\n`;
   }
   // Choix des pics en bambou (anti-gaspillage) : mention ajoutée une seule fois,
