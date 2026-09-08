@@ -571,6 +571,13 @@ function toggleFieldPanel(idPrefix,field){
 }
 
 // Met à jour le texte résumé affiché sur le bouton replié (ex: "M&M's, Spéculoos")
+// Ajoute la mention "(dispo le JJ/MM/AAAA)" pour une option choisie qui n'est pas encore
+// disponible aujourd'hui, afin que ce soit visible même une fois le tiroir refermé.
+function noteDispoTexte(field,value){
+  let entree=(stockIndisponible[field]||[]).find(e=>e.nom===value);
+  return (entree&&entree.date)?` (dispo le ${entree.date})`:"";
+}
+
 function updateFieldSummary(idPrefix,field){
   let summaryEl=document.getElementById(`${idPrefix}-${field}-summary`);
   let toggleEl=document.getElementById(`${idPrefix}-${field}-toggle`);
@@ -579,20 +586,21 @@ function updateFieldSummary(idPrefix,field){
   if(field==="nappage"){
     let arr=getBoxMultiValues(idPrefix,"nappage");
     selection=arr.length>0;
-    texte=selection?arr.join(", "):"Aucun";
+    texte=selection?arr.map(v=>v+noteDispoTexte("nappage",v)).join(", "):"Aucun";
   }else if(field==="garniture"){
     let arr=getBoxMultiValues(idPrefix,"garniture");
     selection=arr.length>0;
-    texte=selection?arr.map(v=>garnitureLabelsCourts[v]||v).join(", "):"Aucune";
+    texte=selection?arr.map(v=>(garnitureLabelsCourts[v]||v)+noteDispoTexte("garniture",v)).join(", "):"Aucune";
   }else if(field==="pot"){
     let pots=getBoxPots(idPrefix);
-    let parts=Object.keys(pots).filter(k=>pots[k]>0).map(k=>`${pots[k]>1?pots[k]+"x ":""}${potLabelsCourts[k]||k}`);
+    let parts=Object.keys(pots).filter(k=>pots[k]>0).map(k=>`${pots[k]>1?pots[k]+"x ":""}${potLabelsCourts[k]||k}${noteDispoTexte("pot",k)}`);
     selection=parts.length>0;
     texte=selection?parts.join(", "):"Aucun";
   }
   summaryEl.textContent=texte;
   if(toggleEl)toggleEl.classList.toggle("has-selection",selection);
 }
+
 
 // Ferme automatiquement un panneau déroulant ouvert quand on clique ailleurs sur la page
 document.addEventListener("click",function(e){
