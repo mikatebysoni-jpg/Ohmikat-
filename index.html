@@ -460,6 +460,7 @@ h3{font-family:var(--font-display);font-weight:600;border-left:3px solid var(--a
             </div>
           </div>
         </div>
+        <div id="stock-warning-box" style="display:none;margin:8px 0;background:#F8E6E4;border:1.5px solid #C0392B;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#8B2E22;font-weight:600;line-height:1.5;"></div>
         <a id="whatsapp" class="btn whatsapp disabled" target="_blank" onclick="return checkForm(event,'WhatsApp')">📲 Envoyer ma commande sur WhatsApp</a>
         <button id="sms-btn" class="btn smsbtn disabled" onclick="triggerSMS(event)">💬 Valider ma commande par SMS</button>
         <a id="phone-btn" class="btn phonebtn disabled" onclick="triggerCall(event)">📞 Valider et m'appeler au téléphone</a>
@@ -1732,6 +1733,15 @@ function updateUI(){
   if(boxesSelected["9 beignets"]>0||boxesSelected["12 beignets"]>0)summaryBar.classList.add("show");else summaryBar.classList.remove("show");
   const btnsCommunication=[document.getElementById("whatsapp"),document.getElementById("sms-btn"),document.getElementById("phone-btn")];
 
+  // Affiche un encart d'alerte permanent (et bloque l'envoi) tant qu'une option choisie n'est
+  // pas disponible pour la date de retrait sélectionnée — visible sans avoir à cliquer.
+  let stockBlockMsg=getIndisponibiliteMessage();
+  let stockWarningBox=document.getElementById("stock-warning-box");
+  if(stockWarningBox){
+    if(stockBlockMsg){stockWarningBox.style.display="block";stockWarningBox.textContent=stockBlockMsg;}
+    else{stockWarningBox.style.display="none";stockWarningBox.textContent="";}
+  }
+
   if(editMode){
     // En mode édition, aucun paiement en ligne n'est proposé : on garde tout masqué
     // à chaque rafraîchissement, quoi qu'il arrive dans le composeur.
@@ -1795,7 +1805,7 @@ function updateUI(){
     document.querySelector(".small").style.display="block";
     let cgvOk=document.getElementById("cgv-check").checked;
     let depositOk=depositMode==="total"?document.getElementById("deposit-check").checked:!!depositCashChoice;
-    let shouldEnable=isFormValid()&&cgvOk&&depositOk;
+    let shouldEnable=isFormValid()&&cgvOk&&depositOk&&!stockBlockMsg;
     btnsCommunication.forEach(btn=>{
       if(shouldEnable){btn.removeAttribute("disabled");btn.classList.remove("disabled");}
       else{btn.setAttribute("disabled","true");btn.classList.add("disabled");}
@@ -1814,7 +1824,7 @@ function updateUI(){
     btnsCommunication.forEach(btn=>{btn.style.display="block";});
     document.querySelector(".small").style.display="block";
     let cgvOk=document.getElementById("cgv-check").checked;
-    let shouldEnable=isFormValid()&&cgvOk;
+    let shouldEnable=isFormValid()&&cgvOk&&!stockBlockMsg;
     btnsCommunication.forEach(btn=>{
       if(shouldEnable){btn.removeAttribute("disabled");btn.classList.remove("disabled");}
       else{btn.setAttribute("disabled","true");btn.classList.add("disabled");}
