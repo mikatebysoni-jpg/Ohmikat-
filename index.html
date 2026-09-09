@@ -253,23 +253,6 @@ h3{font-family:var(--font-display);font-weight:600;border-left:3px solid var(--a
   </div>
 </div>
 
-<div id="promo-modal-backdrop" class="confirm-modal-backdrop">
-  <div class="confirm-modal" style="max-width:360px;padding:0;overflow:hidden;">
-    <div style="background:linear-gradient(135deg,#A62639,#7E1B2B);padding:22px 18px;text-align:center;position:relative;">
-      <div class="offre-blink" style="font-size:34px;line-height:1.1;">🔥🧇🔥</div>
-      <div style="font-family:var(--font-display);font-weight:700;color:#fff;font-size:22px;letter-spacing:0.2px;margin-top:6px;">OFFRE FLASH</div>
-      <div style="color:#fff;font-size:15px;font-weight:600;margin-top:6px;">2 boîtes de 12 beignets</div>
-      <div style="color:#fff;font-size:13px;opacity:0.9;">= 24 beignets à partager 🎉</div>
-      <div class="offre-blink" style="font-family:var(--font-display);font-weight:700;font-size:32px;color:#D9A441;margin-top:10px;">10€ <span style="font-size:16px;color:#fff;opacity:0.75;text-decoration:line-through;font-family:var(--font-body);">14€</span></div>
-      <div style="color:#fff;font-size:12px;margin-top:8px;background:rgba(0,0,0,0.15);display:inline-block;padding:5px 12px;border-radius:20px;">⏰ Jusqu'au 10/08 seulement !</div>
-    </div>
-    <div style="padding:16px;">
-      <button type="button" style="width:100%;background:var(--accent);color:#fff;border:none;font-family:var(--font-body);font-weight:600;font-size:14px;padding:13px;border-radius:10px;cursor:pointer;margin-bottom:8px;" onclick="document.getElementById('promo-modal-backdrop').classList.remove('show');document.getElementById('offre-2x12-banner').scrollIntoView({behavior:'smooth',block:'center'});">🎉 J'en profite !</button>
-      <button type="button" class="confirm-modal-btn cancel" style="width:100%;" onclick="document.getElementById('promo-modal-backdrop').classList.remove('show')">Plus tard</button>
-    </div>
-  </div>
-</div>
-
 <div id="promo-boite-gratuite-backdrop" class="confirm-modal-backdrop">
   <div class="confirm-modal" style="max-width:360px;padding:0;overflow:hidden;">
     <div style="background:linear-gradient(135deg,#D9A441,#B87A1E);padding:22px 18px;text-align:center;">
@@ -333,10 +316,6 @@ h3{font-family:var(--font-display);font-weight:600;border-left:3px solid var(--a
 <div class="compose-col compose-col-left">
 <h3>1. Choisis ton format de boîte</h3>
 <span class="info-limite" style="color:#7A6A5C;">Sélectionne une ou plusieurs boîtes pour personnaliser tes beignets.</span>
-<div id="offre-2x12-banner" style="background:linear-gradient(135deg,#A62639,#7E1B2B);color:#fff;border-radius:12px;padding:12px 16px;margin-bottom:16px;text-align:center;box-shadow:0 3px 10px rgba(166,38,57,0.25);">
-  <div style="font-family:var(--font-display);font-weight:600;font-size:17px;">🔥 2 boîtes de 12 beignets = 24 beignets à 10€ !</div>
-  <div style="font-size:12px;opacity:0.9;margin-top:2px;">au lieu de 14€ — offre valable jusqu'au 10/08 seulement</div>
-</div>
 <div class="grid">
   <div class="card product-card" data-name="9 beignets" data-price="5">
     <img src="Images/Bueno.jpg">
@@ -348,7 +327,6 @@ h3{font-family:var(--font-display);font-weight:600;border-left:3px solid var(--a
     </div>
   </div>
   <div class="card product-card" data-name="12 beignets" data-price="7">
-    <div id="offre-2x12-badge" style="position:absolute;top:8px;right:8px;background:#D9A441;color:#2B1B12;font-size:10px;font-weight:700;padding:4px 8px;border-radius:20px;z-index:2;box-shadow:0 2px 6px rgba(43,27,18,0.25);">🔥 x2 = 10€</div>
     <img src="Images/Mms.jpg">
     <p>Boîte de 12 beignets — <span class="price-tag price-tag-green">7€</span></p>
     <div class="qty-controls">
@@ -377,6 +355,10 @@ h3{font-family:var(--font-display);font-weight:600;border-left:3px solid var(--a
     <div style="background:#F3EBDD;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-top:12px;">
       <input type="checkbox" id="client-pics" style="width:19px;height:19px;flex-shrink:0;accent-color:var(--accent);cursor:pointer;" onchange="updateUI()">
       <label for="client-pics" style="margin:0;font-weight:500;cursor:pointer;font-size:13px;">🥢 J'ai besoin de pics en bambou pour manger mes beignets</label>
+    </div>
+    <div style="background:#F3EBDD;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-top:8px;">
+      <input type="checkbox" id="client-facture" style="width:19px;height:19px;flex-shrink:0;accent-color:var(--accent);cursor:pointer;" onchange="updateUI()">
+      <label for="client-facture" style="margin:0;font-weight:500;cursor:pointer;font-size:13px;">🧾 Je souhaite recevoir une facture</label>
     </div>
   </div>
 </div><!-- end compose-col-left -->
@@ -1390,17 +1372,6 @@ function calculateTotalAndExtractStructure(){
   total+=boxesSelected["12 beignets"]*boxPrices["12 beignets"];
   if(boxesSelected["12 beignets"]>0)textSummaryList.push(`${boxesSelected["12 beignets"]}x Boîte de 12`);
 
-  // Offre temporaire : 2 boîtes de 12 (24 beignets) à 10€ au lieu de 14€ — jusqu'au 10/08/2026 inclus
-  let remiseOffre=0;
-  if(new Date()<FIN_OFFRES_TEMPORAIRES){
-    let nbPaires=Math.floor(boxesSelected["12 beignets"]/2);
-    remiseOffre=nbPaires*4; // 4€ économisés par paire (14€ -> 10€)
-    if(remiseOffre>0){
-      total-=remiseOffre;
-      textSummaryList.push(`🎉 Offre 2 boîtes de 12 (-${remiseOffre.toFixed(2)}€)`);
-      structuredOrderText+=`\n🎉 OFFRE 2 BOÎTES DE 12 (24 beignets à 10€) x${nbPaires} : -${remiseOffre.toFixed(2)}€\n`;
-    }
-  }
   for(let b=1;b<=boxesSelected["9 beignets"];b++){
     let idPrefix=`box9-${b}`;
     let{total:supTotal}=computeBoxSupplements(idPrefix);
@@ -1448,6 +1419,12 @@ function calculateTotalAndExtractStructure(){
   if(picsCheckEl){
     structuredOrderText+=`\n🥢 Pics en bambou : ${picsCheckEl.checked?"OUI":"Non nécessaire"}`;
   }
+  // Idem pour la demande de facture : mention ajoutée uniquement si cochée, pour ne pas
+  // alourdir la fiche des commandes qui n'en ont pas besoin.
+  let factureCheckEl=document.getElementById("client-facture");
+  if(factureCheckEl&&factureCheckEl.checked){
+    structuredOrderText+=`\n🧾 Facture souhaitée : OUI`;
+  }
   return{totalPrice:total,summaryShort:textSummaryList.join(" / "),detailsText:structuredOrderText};
 }
 
@@ -1482,6 +1459,8 @@ function getStructuredSelections(){
   // Idem pour le choix des pics en bambou (anti-gaspillage : décoché par défaut).
   let picsEl=document.getElementById("client-pics");
   struct.pics=picsEl?picsEl.checked:false;
+  let factureEl=document.getElementById("client-facture");
+  struct.facture=factureEl?factureEl.checked:false;
   return struct;
 }
 
@@ -1603,6 +1582,8 @@ async function activerModeEdition(){
       }
       let picsEl=document.getElementById("client-pics");
       if(picsEl)picsEl.checked=!!struct.pics;
+      let factureEl=document.getElementById("client-facture");
+      if(factureEl)factureEl.checked=!!struct.facture;
       // Confirmation intégrée à la bannière PERSISTANTE (visible tant que le client édite),
       // plutôt qu'un simple toast fugace facilement manqué par un client rapide.
       banner.style.background="var(--success)";
@@ -2026,13 +2007,13 @@ function getOrderText(cleanForSms=false,canal="WhatsApp"){
   let b=cleanForSms?"":"*";
   let now=new Date();
   let nowStr=now.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})+" à "+now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-  let text=`${b}COMMANDE OH MIKATE${b}\n`;
+  let text=`${b}COMMANDE OH! MIKATÉ${b}\n`;
   text+=`📅 Reçue le ${nowStr} via ${canal}\n`;
   text+=orderInfo.detailsText;
   text+=`\n${b}TOTAL : ${orderInfo.totalPrice.toFixed(2)} EUR${b}`;
   if(noteField)text+=`\n\nPRECISION CLIENT :\n"${noteField}"`;
-  text+=`\n\n--- INFOS RETRAIT ---\nNom : ${name}\nTelephone : ${phoneNorm}\nDate souhaitee : ${date}\nTranche souhaitee : ${time}\nReglement : ${payText}`;
-  return cleanForSms?text.normalize("NFD").replace(/[\u0300-\u036f]/g,""):text;
+  text+=`\n\n--- INFOS RETRAIT ---\nNom : ${name}\nTéléphone : ${phoneNorm}\nDate souhaitée : ${date}\nTranche souhaitée : ${time}\nRèglement : ${payText}`;
+  return text; // Accents conservés même en SMS (les smartphones basculent de toute façon en MMS, la limite de caractères GSM-7 n'a plus lieu d'être)
 }
 
 function triggerSMS(event){
@@ -2090,12 +2071,11 @@ function afficherPageEspeces(canalEspeces="WhatsApp"){
   document.getElementById("e-remaining").textContent=isEspeces?(orderInfo.totalPrice.toFixed(2)+" €"):(remaining.toFixed(2)+" €");
   document.getElementById("e-appoint-note").textContent=isEspeces?"💡 Le montant total sera à régler en espèces ou par CB à la commande.":(isTotal?"💡 Rien à régler, votre commande est entièrement payée !":(isAcompteCash?"💡 Passe déposer ton acompte en espèces, le solde sera réglé au retrait.":"💡 Le solde vous sera demandé via Wero ou PayPal, à la confirmation de votre commande ou lorsqu'elle sera prête."));
   let msgAnnul=`Bonjour, je souhaite annuler ma commande :\n\n📅 Date souhaitée : ${date}\n⏰ Créneau : ${time}\n💰 Total : ${orderInfo.totalPrice.toFixed(2)} €\n\n📦 Détail :\n${orderInfo.detailsText}\n\nMerci de confirmer l'annulation.`;
-  let msgAnnulSMS=msgAnnul.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
   document.getElementById("e-cancel-whatsapp").href="https://wa.me/33"+targetPhone.substring(1)+"?text="+encodeURIComponent(msgAnnul);
   document.getElementById("e-cancel-sms").addEventListener("click",function(e){
     e.preventDefault();
     let ua=navigator.userAgent.toLowerCase();
-    window.location.href="sms:"+targetPhone+(ua.includes("iphone")?"&body=":"?body=")+encodeURIComponent(msgAnnulSMS);
+    window.location.href="sms:"+targetPhone+(ua.includes("iphone")?"&body=":"?body=")+encodeURIComponent(msgAnnul);
   });
 }
 
@@ -2225,9 +2205,6 @@ function showLimiteBoitesModal(){
 document.getElementById("limite-modal-backdrop").addEventListener("click",function(e){
   if(e.target===this)this.classList.remove("show");
 });
-document.getElementById("promo-modal-backdrop").addEventListener("click",function(e){
-  if(e.target===this)this.classList.remove("show");
-});
 document.getElementById("promo-boite-gratuite-backdrop").addEventListener("click",function(e){
   if(e.target===this)this.classList.remove("show");
 });
@@ -2345,23 +2322,21 @@ function afficherConfirmationStripe(draft){
   document.getElementById("e-remaining").textContent=draft.isTotal?"0.00 €":(draft.remaining+" €");
   document.getElementById("e-appoint-note").textContent=draft.isTotal?"💡 Rien à régler, votre commande est entièrement payée !":"💡 Le solde vous sera demandé à la confirmation de votre commande, ou au plus tard lorsqu'elle sera prête.";
   let msgAnnul=`Bonjour, je souhaite annuler ma commande :\n\n📅 Date souhaitée : ${draft.date}\n⏰ Créneau : ${draft.time}\n💰 Total : ${draft.total} €\n\n📦 Détail :\n${draft.orderDetail}\n\nMerci de confirmer l'annulation.`;
-  let msgAnnulSMS=msgAnnul.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
   document.getElementById("e-cancel-whatsapp").href="https://wa.me/33"+targetPhone.substring(1)+"?text="+encodeURIComponent(msgAnnul);
   document.getElementById("e-cancel-sms").addEventListener("click",function(e){
     e.preventDefault();
     let ua=navigator.userAgent.toLowerCase();
-    window.location.href="sms:"+targetPhone+(ua.includes("iphone")?"&body=":"?body=")+encodeURIComponent(msgAnnulSMS);
+    window.location.href="sms:"+targetPhone+(ua.includes("iphone")?"&body=":"?body=")+encodeURIComponent(msgAnnul);
   });
 
   // Paiement Stripe = pas d'envoi WhatsApp/SMS obligatoire dans le tunnel, donc on invite
   // explicitement le client à en envoyer un pour que la commande ne passe pas inaperçue.
   let msgNotif=`Bonjour ! Je viens de valider et payer ma commande en ligne (carte bancaire) 🧇\n\n👤 ${draft.name}\n📅 ${draft.date}\n⏰ ${draft.time}\n💰 ${draft.total} €\n\nMerci de confirmer, à bientôt !`;
-  let msgNotifSMS=msgNotif.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
   document.getElementById("e-notify-whatsapp").href="https://wa.me/33"+targetPhone.substring(1)+"?text="+encodeURIComponent(msgNotif);
   document.getElementById("e-notify-sms").addEventListener("click",function(e){
     e.preventDefault();
     let ua=navigator.userAgent.toLowerCase();
-    window.location.href="sms:"+targetPhone+(ua.includes("iphone")?"&body=":"?body=")+encodeURIComponent(msgNotifSMS);
+    window.location.href="sms:"+targetPhone+(ua.includes("iphone")?"&body=":"?body=")+encodeURIComponent(msgNotif);
   });
   document.getElementById("e-stripe-notify-section").style.display="block";
 
@@ -2371,10 +2346,6 @@ function afficherConfirmationStripe(draft){
 window.onload=function(){
   document.getElementById("especes-page").style.display="none";
   document.getElementById("main-page").style.display="block";
-  if(new Date()>=FIN_OFFRES_TEMPORAIRES){
-    let banner=document.getElementById("offre-2x12-banner");let badge=document.getElementById("offre-2x12-badge");
-    if(banner)banner.remove();if(badge)badge.remove();
-  }
   initDates();
   handleDateChange();
   if(editMode&&editPhone){
@@ -2403,13 +2374,6 @@ window.onload=function(){
       let draft=JSON.parse(raw);
       afficherConfirmationStripe(draft);
     }
-  }
-
-  // Pop-up promo "Offre flash 2 boîtes de 12 à 10€" — visible à chaque visite jusqu'à la fin de l'offre
-  if(new Date()<FIN_OFFRES_TEMPORAIRES && !editMode){
-    setTimeout(()=>{
-      document.getElementById("promo-modal-backdrop").classList.add("show");
-    },1500);
   }
 
   // Pop-up promo "Boîte de 9 offerte" — tous les dimanches à partir du 27/09/2026.
