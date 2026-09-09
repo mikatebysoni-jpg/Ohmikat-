@@ -87,6 +87,10 @@ h3{font-family:var(--font-display);font-weight:600;border-left:3px solid var(--a
 .chip-label-green{background:var(--success);}
 .chip-price{color:var(--accent);font-weight:normal;text-transform:none;letter-spacing:0;margin-left:4px;}
 .chip-group{display:flex;flex-wrap:wrap;gap:5px;}
+.express-section{border-top:1px dashed var(--border,#e4d3b8);margin-top:10px;padding-top:10px;}
+.express-select{margin-bottom:8px;}
+.express-select:last-child{margin-bottom:0;}
+.express-hint{font-size:10.5px;color:var(--ink-muted,#8a7660);font-style:italic;line-height:1.4;}
 .chip{background:var(--surface);border:1.5px solid var(--border);color:var(--ink-muted);font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:16px;cursor:pointer;font-family:var(--font-body);transition:.15s;white-space:nowrap;line-height:1.3;}
 .chip:active{transform:scale(0.96);}
 .chip.selected{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(166,38,57,0.25);}
@@ -1084,6 +1088,65 @@ function potStepperRow(idPrefix,value,label){
   </div>`;
 }
 
+/* ===== CHOIX EXPRESS — "Nos coups de cœur" (complément aux boutons, ne les remplace pas) ===== */
+const RECETTES_EXPRESS=[
+  {id:"choco-mm",label:"🍫 Choco M&M's",base:"Nature",nappages:["Chocolat"],garnitures:["Éclats M&M's"],pots:{}},
+  {id:"caramel-cacahuete",label:"🍮 Le Caramel Croquant",base:"Nature",nappages:["Caramel"],garnitures:["Éclats Cacahuète"],pots:{}},
+  {id:"tout-pistache",label:"🍏 Double Pistache",base:"Nature",nappages:["Pistache"],garnitures:["Éclat de pistache"],pots:{}},
+  {id:"tout-bueno",label:"🌰 Le Double Bueno",base:"Nature",nappages:["Bueno"],garnitures:["Bueno"],pots:{}},
+  {id:"bueno-speculoos",label:"🍪 Le Bueno Spéculoos",base:"Nature",nappages:["Bueno"],garnitures:["Éclats Spéculoos"],pots:{}},
+  {id:"choco-oreo",label:"🍫 Choco Oréo",base:"Nature",nappages:["Chocolat"],garnitures:["Oréo"],pots:{}},
+  {id:"tout-speculoos",label:"🍪 Double Spéculoos",base:"Nature",nappages:["Spéculoos"],garnitures:["Éclats Spéculoos"],pots:{}}
+];
+
+// Échappe une valeur pour une utilisation sûre dans un attribut HTML (value="...").
+function htmlEsc(v){return String(v).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/'/g,"&#39;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+// Convertit les lettres/chiffres ASCII en caractères Unicode "gras" (Mathematical Bold), pour
+// simuler du gras dans un <option> natif (le HTML n'y est jamais interprété). Les accents,
+// emojis, apostrophes et esperluettes restent inchangés (non couverts par ce jeu Unicode).
+function toBoldUnicode(str){
+  return String(str).split("").map(ch=>{
+    let code=ch.codePointAt(0);
+    if(code>=65&&code<=90)return String.fromCodePoint(0x1D400+(code-65));
+    if(code>=97&&code<=122)return String.fromCodePoint(0x1D41A+(code-97));
+    if(code>=48&&code<=57)return String.fromCodePoint(0x1D7CE+(code-48));
+    return ch;
+  }).join("");
+}
+
+function renderRecetteOption(r){
+  let desc=[r.base!=="Nature"?r.base:null,...r.nappages,...r.garnitures].filter(Boolean).join(" + ");
+  return `<option value="${htmlEsc(r.id)}">${htmlEsc(toBoldUnicode(r.label))} — ${htmlEsc(desc)}</option>`;
+}
+
+function generateExpressCarouselHtml(idPrefix){
+  return `<div class="chip-section express-section">
+    <div class="chip-label chip-label-pink">❤️ Nos coups de cœur</div>
+    <select class="select-custom express-select" onchange="if(this.value){appliquerRecetteExpress('${idPrefix}',this.value);}">
+      <option value="">-- Choisir un coup de cœur --</option>
+      ${RECETTES_EXPRESS.map(r=>renderRecetteOption(r)).join("")}
+    </select>
+    <div class="express-hint">💡 Personnalisable : modifie les toppings après ta sélection si besoin.</div>
+  </div>`;
+}
+
+// Applique une recette complète (remplace enrobage/nappages/garnitures/pots de la boîte visée).
+// setBoxPots respecte automatiquement le plafond de pots (maxPots) si la boîte en a un.
+function appliquerRecetteExpress(idPrefix,recetteId){
+  let r=RECETTES_EXPRESS.find(x=>x.id===recetteId);
+  if(!r)return;
+  setChipValue(idPrefix,"base",r.base);
+  setBoxMultiValues(idPrefix,"nappage",r.nappages);
+  setBoxMultiValues(idPrefix,"garniture",r.garnitures);
+  setBoxPots(idPrefix,r.pots);
+  let row=document.querySelector(`[data-prefix="${idPrefix}"]`);
+  let defaultImg=row?.dataset.defaultimg||"Images/Beignet9.jpg";
+  updateBoxImage(idPrefix,defaultImg);
+  updateUI();
+  showToast(`✨ Recette "${r.label}" appliquée !`);
+}
+
 function generateBoxRowHtml(idPrefix,defaultImg,maxPots){
   return `<div class="lot-row lot-active" data-prefix="${idPrefix}" data-defaultimg="${defaultImg}">
     <img id="${idPrefix}-img" src="${defaultImg}" class="lot-preview-img" alt="Aperçu boîte">
@@ -1149,6 +1212,7 @@ function generateBoxRowHtml(idPrefix,defaultImg,maxPots){
           </div>
         </div>
       </div>
+      ${generateExpressCarouselHtml(idPrefix)}
     </div>
   </div>`;
 }
