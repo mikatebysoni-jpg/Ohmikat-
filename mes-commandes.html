@@ -64,6 +64,7 @@ h1{font-family:var(--font-display);font-weight:600;font-size:26px;color:var(--ac
 .onglet-btn.actif{background:var(--accent);border-color:var(--accent);color:#fff;}
 .commande-detail{font-size:13px;color:var(--ink-muted);line-height:1.7;white-space:pre-wrap;background:var(--surface-alt);border-radius:8px;padding:10px;margin-bottom:10px;}
 .commande-meta{font-size:12px;color:var(--ink-faint);margin-bottom:12px;}
+.commande-nom{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:6px;}
 .commande-actions{display:flex;gap:8px;flex-wrap:wrap;}
 .action-btn{flex:1;min-width:100px;background:var(--surface-alt);border:1.5px solid var(--border);color:var(--ink);font-size:12px;font-weight:600;padding:10px 8px;border-radius:20px;cursor:pointer;font-family:var(--font-body);text-align:center;}
 .action-btn.annuler{border-color:var(--error);color:var(--error);}
@@ -319,6 +320,7 @@ function afficherResultats(){
           <div class="commande-date">📅 ${c.dateRetrait||"—"}</div>
           <span class="commande-statut ${statut.cls}">${statut.txt}</span>${c.modifiee?`<span class="commande-statut statut-modifiee">✏️ Modifiée à ta demande</span>`:""}
         </div>
+        ${c.name?`<div class="commande-nom">👤 ${c.name}</div>`:""}
         <div class="commande-meta">⏰ ${c.creneau||"—"} • 💰 Total : ${c.total||"—"} €</div>
         ${ligneSolde}
         <div class="commande-detail">${c.order||""}</div>
