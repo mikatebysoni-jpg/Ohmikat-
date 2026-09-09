@@ -201,10 +201,12 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--ink);min-heig
 <div class="popup" id="popup-supp">
   <div class="popup-box">
     <h3>⚠️ Supprimer ?</h3>
-    <p>La commande sera supprimée du tableau de bord. Elle restera dans Google Sheets.</p>
-    <div class="popup-btns">
+    <p>La commande sera supprimée du tableau de bord. Elle restera dans Google Sheets. Veux-tu prévenir le client ?</p>
+    <div class="popup-btns" style="flex-direction:column;gap:8px;">
+      <button class="btn-ok-supp" style="background:#25D366;" onclick="confirmerSuppression('whatsapp')">📲 Supprimer et prévenir par WhatsApp</button>
+      <button class="btn-ok-supp" style="background:var(--blue);" onclick="confirmerSuppression('sms')">💬 Supprimer et prévenir par SMS</button>
+      <button class="btn-ok-supp" onclick="confirmerSuppression(null)">🗑️ Supprimer sans prévenir</button>
       <button class="btn-cancel" onclick="fermerPopup()">Annuler</button>
-      <button class="btn-ok-supp" onclick="confirmerSuppression()">Supprimer</button>
     </div>
   </div>
 </div>
@@ -1710,7 +1712,7 @@ function genMsg(c,pourSMS=false){
   msg+=`🔗 ${b}Besoin de modifier ou d'annuler ?${b}\nohmikate.netlify.app/mes-commandes\n\n`;
   msg+=`━━━━━━━━━━━━━━━\n`;
   msg+=`À tout à l'heure ! 🧇\n— Oh! Mikaté`;
-  return pourSMS?msg.normalize("NFD").replace(/[\u0300-\u036f]/g,""):msg;
+  return msg; // Accents conservés même en SMS (les smartphones basculent de toute façon en MMS, la limite de caractères GSM-7 n'a plus lieu d'être)
 }
 
 function genMsgPret(c,pourSMS=false){
@@ -1737,7 +1739,7 @@ function genMsgPret(c,pourSMS=false){
   }
   msg+=`━━━━━━━━━━━━━━━\n`;
   msg+=`À tout de suite ! 🧇\n— Oh! Mikaté`;
-  return pourSMS?msg.normalize("NFD").replace(/[\u0300-\u036f]/g,""):msg;
+  return msg; // Accents conservés même en SMS (les smartphones basculent de toute façon en MMS, la limite de caractères GSM-7 n'a plus lieu d'être)
 }
 
 /* ===== SÉLECTION GROUPÉE ===== */
@@ -1975,7 +1977,7 @@ function genMsgAnnulationParToi(c,pourSMS=false){
     msg+=`${b}Aucun montant ne te sera demandé${b}, et j'espère pouvoir te régaler une prochaine fois ! 🧇\n\n`;
   }
   msg+=`Encore désolée pour la gêne occasionnée.\n— Oh! Mikaté`;
-  return pourSMS?msg.normalize("NFD").replace(/[\u0300-\u036f]/g,""):msg;
+  return msg; // Accents conservés même en SMS (les smartphones basculent de toute façon en MMS, la limite de caractères GSM-7 n'a plus lieu d'être)
 }
 function fermerPopup(){idASupp=null;document.getElementById("popup-supp").classList.remove("show");}
 function envoyerSuppressionAuSheet(id,motif){
@@ -1988,8 +1990,21 @@ function envoyerSuppressionAuSheet(id,motif){
   }).catch(()=>{});
 }
 
-function confirmerSuppression(){
+function confirmerSuppression(canal){
   if(idASupp===null)return;
+  let c=toutesCommandes.find(x=>x.id===idASupp);
+  if(canal&&c){
+    let targetPhone=normalizePhone(c.phone);
+    if(!targetPhone){
+      showToast("⚠️ Pas de numéro de téléphone — commande supprimée sans notification");
+    }else if(canal==="whatsapp"){
+      let txt=genMsgAnnulationParToi(c,false);
+      window.open("https://wa.me/33"+targetPhone.substring(1)+"?text="+encodeURIComponent(txt),"_blank");
+    }else if(canal==="sms"){
+      let txt=genMsgAnnulationParToi(c,true);
+      window.location.href='sms:'+targetPhone+'?body='+encodeURIComponent(txt);
+    }
+  }
   supprimees.push(idASupp);
   localStorage.setItem('ohMikateSupprimees',JSON.stringify(supprimees));
   confirmees=confirmees.filter(id=>id!==idASupp);
